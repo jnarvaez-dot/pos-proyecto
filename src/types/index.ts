@@ -15,6 +15,16 @@ export interface Product {
     createdAt: string | Date;
     updatedAt: string | Date;
 }
+export interface SaleItemInput {
+    productId: number;
+    quantity: number;
+    price: number;
+}
+
+export interface SaleCreateInput {
+    userId: string;
+    items: SaleItemInput[];
+}
 
 export type Role = 'ADMIN' | 'CASHIER';
 
@@ -31,8 +41,3 @@ export interface LoginCredentials {
     email: string;
     password?: string;
 }
-
-// 3. Ejemplo de cómo la usaría tu compañero en el Frontend
-/*
-  const [products, setProducts] = useState<Product[]>([]);
-*/
