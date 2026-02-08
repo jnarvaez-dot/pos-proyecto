@@ -1,58 +1,61 @@
 # 🥖 Proyecto Panadería "ZambiPan"
 
-Sistema de gestión de inventario y ventas para panaderías, desarrollado con **Next.js**, **Prisma** y **Supabase**.
+Sistema profesional de gestión de inventario y punto de venta (POS) desarrollado con **Next.js**, **Prisma** y **Supabase**.
 
-## 🛠️ Configuración Inicial para Desarrolladores
+## 🛠️ Configuración Inicial
 
-Si acabas de clonar el proyecto, sigue estos pasos para configurar tu entorno local:
+1. **Instalar dependencias:**
+   ```bash
+    npm install
+    npx prisma generate
+    npx prisma db push
 
-### 1. Instalación de dependencias
-Asegúrate de tener Node.js instalado y ejecuta:
-```bash
-npm install
+### Ejecutar en Desarrollo:
+
+    npm run dev
+
+## Endpoints de la API
+### 📦 Inventario
+
+GET /api/products: Lista completa de productos.
+
+GET /api/categories: Catálogo de categorías disponibles.
+
+GET /api/inventory/low-stock: Alertas de stock (Productos por debajo de su minStock).
+
+### 💰 Ventas
+
+POST /api/sales: Registra una venta, crea el detalle y resta stock automáticamente. (Cuenta con rollback automático si no hay stock suficiente).
+
+Ejemplo de llamada (Fetch):
+
+```JavaScript
+const res = await fetch('/api/sales', {
+method: 'POST',
+body: JSON.stringify({
+userId: "id_del_cajero",
+items: [{ productId: 1, quantity: 2, price: 1.50 }]
+})
+});
 ```
 
-### 2. CREA un archivo .env con esto ya te lo paso al bien escrito 
-```bash
-DATABASE_URL="postgresql://postgres:tu_password@db.tu_id_supabase.supabase.co:5432/postgres"
-```
-### 3. GENERA PRISMA
-```bash
-npx prisma generate
-```
-### Asi puedes traer la data 
-Productos: GET /api/products (Trae todos los productos con su categoría incluida).
+### 🔐 Autenticación y Roles
+El sistema utiliza NextAuth con estrategia JWT.
 
-Categorías: GET /api/categories (Trae el listado de categorías disponibles).
+Admin: Acceso total a reportes y gestión de stock.
 
-Productos bajos en stock: GET /api/inventory/low-stock (trae solo los productos bajos en stock determinado por min stock puesto en la base de datos )
+Cashier: Acceso limitado a punto de venta.
 
-```bash
-ejemplo full ia
-const getProducts = async () => {
-  const res = await fetch('/api/products');
-  const products = await res.json();
-  return products;
-}
-```
-### Asi se ve la data 
-```bash
+User: admin@zambipan.com / Pass: admin123
+
+### 🏗️ Estructura de Datos
+Si tienes dudas sobre los tipos de TypeScript, consulta: src/types/index.ts.
+
+La data de productos incluye la relación de categoría por defecto:
+
+```JSON
 {
 "name": "Concha de Vainilla",
 "stock": 24,
-"category": {
-"name": "Pan Dulce"
+"category": { "name": "Pan Dulce" }
 }
-}
-```
-### Ventas 
-Gestión de Ventas
-
-POST /api/sales: Registra una venta completa.
-
-Lógica: Crea la venta, los detalles y resta automáticamente el stock de los productos vendidos.
-
-Seguridad: Si un producto no tiene stock suficiente, la transacción se cancela (Rollback).
-
-### SI TIENES DUDAS ABRES /src/types/index.ts
-
